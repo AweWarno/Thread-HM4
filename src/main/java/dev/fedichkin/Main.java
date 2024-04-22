@@ -44,14 +44,7 @@ public class Main {
 
         Thread threadA = new Thread(() -> {
             try {
-                for (int i = countLineString; i > 0; i--) {
-                    String line = queueToA.take();
-                    int currentMaxA = line.replaceAll("a", "").length();
-                    if (countMaxA < currentMaxA) {
-                        maxA = line;
-                        countMaxA = currentMaxA;
-                    }
-                }
+                incrementCount(queueToA, "a", countMaxA, maxA);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -59,14 +52,7 @@ public class Main {
 
         Thread threadB = new Thread(() -> {
             try {
-                for (int i = countLineString; i > 0; i--) {
-                    String line = queueToB.take();
-                    int currentMaxB = line.replaceAll("b", "").length();
-                    if (countMaxB < currentMaxB) {
-                        maxB = line;
-                        countMaxB = currentMaxB;
-                    }
-                }
+                incrementCount(queueToB, "b", countMaxB, maxB);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -74,14 +60,7 @@ public class Main {
 
         Thread threadC = new Thread(() -> {
             try {
-                for (int i = countLineString; i > 0; i--) {
-                    String line = queueToC.take();
-                    int currentMaxC = line.replaceAll("c", "").length();
-                    if (countMaxC < currentMaxC) {
-                        maxC = line;
-                        countMaxC = currentMaxC;
-                    }
-                }
+                incrementCount(queueToC, "c", countMaxC, maxC);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -102,6 +81,17 @@ public class Main {
 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static void incrementCount(BlockingQueue<String> queueTo, String regex, int countMax, String max) throws InterruptedException {
+        for (int i = countLineString; i > 0; i--) {
+            String line = queueTo.take();
+            int currentMaxA = line.replaceAll(regex, "").length();
+            if (countMax < currentMaxA) {
+                max = line;
+                countMax = currentMaxA;
+            }
         }
     }
 
